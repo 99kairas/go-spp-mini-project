@@ -2,6 +2,7 @@ package configs
 
 import (
 	"fmt"
+	"go-spp/models"
 	"os"
 	"time"
 
@@ -54,5 +55,11 @@ func InitDB() *gorm.DB {
 }
 
 func InitMigrate() {
+	err := DB.AutoMigrate(&models.Admin{})
+	// DB.AutoMigrate(&models.Student{})
+
+	if err != nil {
+		panic("failed to migrate database")
+	}
 
 }

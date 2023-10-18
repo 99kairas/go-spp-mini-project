@@ -1,7 +1,10 @@
 package main
 
 import (
+	"go-spp/configs"
+	"go-spp/routes"
 	"log"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo"
@@ -13,8 +16,13 @@ func main() {
 		log.Fatal("failed to load .env")
 	}
 
-	// db := configs.InitDB()
+	loc, _ := time.LoadLocation("Asia/Jakarta")
+	time.Local = loc
+
+	db := configs.InitDB()
 	e := echo.New()
+
+	routes.Routes(e, db)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }
