@@ -18,3 +18,18 @@ type LoginAdminResponse struct {
 	Username string `json:"username"`
 	Token    string `json:"token"`
 }
+
+type CreateStudentResponse struct {
+	ID        uuid.UUID `json:"id"`
+	NIS       string    `json:"nomor_induk_siswa"`
+	Firstname string    `json:"first_name"`
+	Lastname  string    `json:"last_name"`
+	Address   string    `json:"address"`
+	Class     string    `json:"class"`
+}
+
+type LoginStudentResponse struct {
+	NIS   string `json:"nis"`
+	Name  string `json:"name"`
+	Token string `json:"token"`
+}

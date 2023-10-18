@@ -55,8 +55,7 @@ func InitDB() *gorm.DB {
 }
 
 func InitMigrate() {
-	err := DB.AutoMigrate(&models.Admin{})
-	// DB.AutoMigrate(&models.Student{})
+	err := DB.AutoMigrate(&models.Admin{}, &models.Student{})
 
 	if err != nil {
 		panic("failed to migrate database")

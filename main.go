@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-spp/configs"
+	"go-spp/middlewares"
 	"go-spp/routes"
 	"log"
 	"time"
@@ -23,6 +24,8 @@ func main() {
 	e := echo.New()
 
 	routes.Routes(e, db)
+
+	middlewares.LogMiddleware(e)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -20,7 +20,7 @@ func LoginAdmin(req *payloads.LoginAdminRequest) (res payloads.LoginAdminRespons
 		return res, errors.New("wrong password")
 	}
 
-	token, err := middlewares.CreateToken(admin.ID, req.Username)
+	token, err := middlewares.CreateAdminToken(admin.ID, req.Username)
 	if err != nil {
 		return res, errors.New("failed to create token")
 	}
@@ -30,6 +30,33 @@ func LoginAdmin(req *payloads.LoginAdminRequest) (res payloads.LoginAdminRespons
 	res = payloads.LoginAdminResponse{
 		Username: admin.Username,
 		Token:    admin.Token,
+	}
+
+	return
+}
+
+func LoginStudent(req *payloads.LoginStudentRequest) (res payloads.LoginStudentResponse, err error) {
+	student, err := repositories.GetStudent(req.NIS)
+	if err != nil {
+		return res, errors.New("username is not registered")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(student.Password), []byte(req.Password))
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return res, errors.New("wrong password")
+	}
+
+	token, err := middlewares.CreateStudentToken(student.ID, req.NIS)
+	if err != nil {
+		return res, errors.New("failed to create token")
+	}
+
+	student.Token = token
+
+	res = payloads.LoginStudentResponse{
+		NIS:   student.NIS,
+		Name:  student.FirstName + " " + student.LastName,
+		Token: student.Token,
 	}
 
 	return
