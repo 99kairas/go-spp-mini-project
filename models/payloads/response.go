@@ -25,7 +25,7 @@ type CreateStudentResponse struct {
 	Firstname string    `json:"first_name"`
 	Lastname  string    `json:"last_name"`
 	Address   string    `json:"address"`
-	Class     string    `json:"class"`
+	GradeID   uuid.UUID `json:"grade_id"`
 }
 
 type LoginStudentResponse struct {
