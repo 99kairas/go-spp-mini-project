@@ -29,7 +29,7 @@ func CreateStudent(req *payloads.CreateStudentRequest) (resp payloads.CreateStud
 		LastName:    req.Lastname,
 		Address:     req.Address,
 		PhoneNumber: req.PhoneNumber,
-		Class:       req.Class,
+		GradeID:     req.GradeID,
 	}
 
 	err = repositories.CreateStudent(newStudent)
@@ -44,9 +44,8 @@ func CreateStudent(req *payloads.CreateStudentRequest) (resp payloads.CreateStud
 		Firstname: newStudent.FirstName,
 		Lastname:  newStudent.LastName,
 		Address:   newStudent.Address,
-		Class:     newStudent.Class,
+		GradeID:   newStudent.GradeID,
 	}
 
 	return
-
 }

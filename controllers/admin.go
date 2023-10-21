@@ -5,7 +5,7 @@ import (
 	"go-spp/usecase"
 	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func RegisterAdminController(c echo.Context) error {
@@ -14,9 +14,9 @@ func RegisterAdminController(c echo.Context) error {
 
 	response, err := usecase.CreateAdmin(&payloadUser)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
-			"messages": "error create admin",
-			"error":    err.Error(),
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "error create admin",
+			Data:    err.Error(),
 		})
 	}
 

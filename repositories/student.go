@@ -5,7 +5,7 @@ import (
 	"go-spp/models"
 	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func IsNISAvailable(nis string) bool {
@@ -20,15 +20,9 @@ func IsNISAvailable(nis string) bool {
 }
 
 func CreateStudent(student *models.Student) error {
-	admin := &models.Admin{}
-	if err := configs.DB.Model(admin.Username).Where(student.NIS).Error; err != nil {
-		return err
-	}
-
 	if err := configs.DB.Create(student).Error; err != nil {
 		return err
 	}
-
 	return nil
 }
 

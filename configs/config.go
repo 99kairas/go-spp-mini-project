@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -50,15 +51,74 @@ func InitDB() *gorm.DB {
 	}
 
 	InitMigrate()
+	Seeders()
 
 	return DB
 }
 
 func InitMigrate() {
-	err := DB.AutoMigrate(&models.Admin{}, &models.Student{})
-
+	err := DB.AutoMigrate(&models.Admin{}, &models.Student{}, &models.Grade{}, &models.SPP{})
 	if err != nil {
 		panic("failed to migrate database")
 	}
 
+}
+
+func Seeders() {
+	grade := []models.Grade{
+		{
+			ID:    uuid.New(),
+			Level: "First Grade",
+		},
+		{
+			ID:    uuid.New(),
+			Level: "Second Grade",
+		},
+		{
+			ID:    uuid.New(),
+			Level: "Third Grade",
+		},
+		{
+			ID:    uuid.New(),
+			Level: "Fourth Grade",
+		},
+		{
+			ID:    uuid.New(),
+			Level: "Fifth Grade",
+		},
+		{
+			ID:    uuid.New(),
+			Level: "Sixth Grade",
+		},
+	}
+
+	for _, v := range grade {
+		var exist models.Grade
+
+		err := DB.Where("level = ?", v.Level).First(&exist).Error
+
+		if err != nil {
+			DB.Create(&v)
+		}
+	}
+
+	// passwordHash, _ := bcrypt.GenerateFromPassword([]byte("Rizki@123"), bcrypt.DefaultCost)
+	// student := []models.Student{
+	// 	{
+	// 		ID:        uuid.New(),
+	// 		NIS:       "11120029",
+	// 		Password:  string(passwordHash),
+	// 		FirstName: "Rizki Andika",
+	// 		LastName:  "Setiadi",
+	// 	},
+	// }
+	// for _, v := range student {
+	// 	var exist models.Student
+
+	// 	err := DB.Where("nis = ?", v.NIS).First(&exist).Error
+
+	// 	if err != nil {
+	// 		DB.Create(&v)
+	// 	}
+	// }
 }
