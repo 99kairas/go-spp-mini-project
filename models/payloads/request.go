@@ -28,3 +28,10 @@ type LoginStudentRequest struct {
 	NIS      string `json:"nis" form:"nis" validate:"required"`
 	Password string `json:"password" form:"password" validate:"required, min=6"`
 }
+
+type CreateSPPRequest struct {
+	GradeID uuid.UUID `json:"grade_id" form:"grade_id"`
+	Year    string    `json:"year" form:"year"`
+	Month   string    `json:"month" form:"month"`
+	Amount  float64   `json:"amount" form:"amount"`
+}

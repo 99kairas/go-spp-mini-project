@@ -33,3 +33,11 @@ func GetAdmin(username string) (admin *models.Admin, err error) {
 	}
 	return admin, nil
 }
+
+func CreateSPP(spp *models.SPP) error {
+	if err := configs.DB.Create(spp).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

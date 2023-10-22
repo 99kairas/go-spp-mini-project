@@ -20,7 +20,7 @@ func LoginAdmin(req *payloads.LoginAdminRequest) (res payloads.LoginAdminRespons
 		return res, errors.New("wrong password")
 	}
 
-	token, err := middlewares.CreateTokenAdmin(admin.ID)
+	token, err := middlewares.CreateTokenAdmin(admin.ID, req.Username)
 	if err != nil {
 		return res, errors.New("failed to create token")
 	}
@@ -46,7 +46,7 @@ func LoginStudent(req *payloads.LoginStudentRequest) (res payloads.LoginStudentR
 		return res, errors.New("wrong password")
 	}
 
-	token, err := middlewares.CreateTokenUser(student.ID)
+	token, err := middlewares.CreateTokenUser(student.ID, req.NIS)
 	if err != nil {
 		return res, errors.New("failed to create token")
 	}
