@@ -10,7 +10,7 @@ import (
 )
 
 func RegisterStudentController(c echo.Context) error {
-	if _, err := middlewares.ExtractAdminToken(c); err != nil {
+	if _, err := middlewares.IsAdmin(c); err != nil {
 		return c.JSON(http.StatusUnauthorized, payloads.Response{
 			Message: "route only for admin",
 		})
