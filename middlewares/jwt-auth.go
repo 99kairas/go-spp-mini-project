@@ -1,55 +1,80 @@
 package middlewares
 
 import (
-	"go-spp/models"
+	"net/http"
 	"os"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	echojwt "github.com/labstack/echo-jwt"
+	"github.com/labstack/echo/v4"
 )
 
-var IsLoggedIn = middleware.JWTWithConfig(middleware.JWTConfig{
-	SigningMethod: "HS256",
-	SigningKey:    []byte(os.Getenv("SECRET_JWT")),
-})
+func JWTMiddleware() echo.MiddlewareFunc {
+	return echojwt.WithConfig(echojwt.Config{
+		SigningKey:    []byte(os.Getenv("SECRET_JWT")),
+		SigningMethod: "HS256",
+	})
+}
 
-func CreateAdminToken(adminID uuid.UUID, username string) (string, error) {
+func CreateTokenAdmin(adminID uuid.UUID, username string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["adminID"] = adminID
 	claims["username"] = username
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	claims["admin"] = true
+	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	byteSecret := []byte(os.Getenv("SECRET_JWT"))
-	return token.SignedString(byteSecret)
+	return token.SignedString([]byte(os.Getenv("SECRET_JWT")))
+
 }
 
-func CreateStudentToken(studentID uuid.UUID, nis string) (string, error) {
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["studentID"] = studentID
-	claims["nis"] = nis
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	byteSecret := []byte(os.Getenv("SECRET_JWT"))
-	return token.SignedString(byteSecret)
-}
-
-func IsAdmin(c echo.Context) (int, error) {
+func IsAdmin(c echo.Context) (uuid.UUID, error) {
 	user := c.Get("user").(*jwt.Token)
 	if !user.Valid {
-		return 0, echo.NewHTTPError(401, "Unauthorized")
+		return uuid.Nil, echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
 	}
-
-	admin := &models.Admin{}
 	claims := user.Claims.(jwt.MapClaims)
-	if claims["username"] != admin.Username {
-		return 0, echo.NewHTTPError(401, "Unauthorized")
+	if claims["admin"] != true {
+		return uuid.Nil, echo.NewHTTPError(401, "Unauthorized")
 	}
-	adminID := int(claims["adminID"].(float64))
 
-	return adminID, nil
+	adminID := claims["adminID"].(string)
+	uid, err := uuid.Parse(adminID)
+	if err != nil {
+		return uuid.Nil, echo.NewHTTPError(http.StatusInternalServerError, "Internal Server Error")
+	}
+
+	return uid, nil
+}
+
+func CreateTokenUser(userID uuid.UUID, nis string) (string, error) {
+	claims := jwt.MapClaims{}
+	claims["authorized"] = true
+	claims["userID"] = userID
+	claims["nis"] = nis
+	claims["admin"] = false
+	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() //Token expires after 1 hour
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(os.Getenv("SECRET_JWT")))
+}
+
+func IsUser(c echo.Context) (uuid.UUID, error) {
+	user := c.Get("user").(*jwt.Token)
+	if !user.Valid {
+		return uuid.Nil, echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
+	}
+	claims := user.Claims.(jwt.MapClaims)
+	if claims["admin"] != false {
+		return uuid.Nil, echo.NewHTTPError(401, "Unauthorized")
+	}
+
+	userID := claims["userID"].(string)
+	uid, err := uuid.Parse(userID)
+	if err != nil {
+		return uuid.Nil, echo.NewHTTPError(http.StatusInternalServerError, "Internal Server Error")
+	}
+
+	return uid, nil
 }

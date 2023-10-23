@@ -25,11 +25,19 @@ type CreateStudentResponse struct {
 	Firstname string    `json:"first_name"`
 	Lastname  string    `json:"last_name"`
 	Address   string    `json:"address"`
-	Class     string    `json:"class"`
+	GradeID   uuid.UUID `json:"grade_id"`
 }
 
 type LoginStudentResponse struct {
 	NIS   string `json:"nis"`
 	Name  string `json:"name"`
 	Token string `json:"token"`
+}
+
+type CreateSPPResponse struct {
+	ID      uuid.UUID `json:"id"`
+	GradeID uuid.UUID `json:"grade_id"`
+	Year    string    `json:"year"`
+	Month   string    `json:"month"`
+	Amount  float64   `json:"amount"`
 }
