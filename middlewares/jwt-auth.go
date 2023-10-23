@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -61,12 +60,21 @@ func CreateTokenUser(userID uuid.UUID, nis string) (string, error) {
 	return token.SignedString([]byte(os.Getenv("SECRET_JWT")))
 }
 
-func ExtractUserToken(e echo.Context) (int, error) {
-	user := e.Get("user").(*jwt.Token)
-	if user.Valid {
-		claims := user.Claims.(jwt.MapClaims)
-		userID := claims["userID"].(float64)
-		return int(userID), nil
+func IsUser(c echo.Context) (uuid.UUID, error) {
+	user := c.Get("user").(*jwt.Token)
+	if !user.Valid {
+		return uuid.Nil, echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized")
 	}
-	return 0, fmt.Errorf("token invalid")
+	claims := user.Claims.(jwt.MapClaims)
+	if claims["admin"] != false {
+		return uuid.Nil, echo.NewHTTPError(401, "Unauthorized")
+	}
+
+	userID := claims["userID"].(string)
+	uid, err := uuid.Parse(userID)
+	if err != nil {
+		return uuid.Nil, echo.NewHTTPError(http.StatusInternalServerError, "Internal Server Error")
+	}
+
+	return uid, nil
 }
