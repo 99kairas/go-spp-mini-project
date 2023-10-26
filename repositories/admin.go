@@ -5,6 +5,7 @@ import (
 	"go-spp/models"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -40,4 +41,12 @@ func CreateSPP(spp *models.SPP) error {
 	}
 
 	return nil
+}
+
+func GetStudentByID(id uuid.UUID) (student *models.Student, err error) {
+	if err := configs.DB.Where("id = ?", id).First(&student).Error; err != nil {
+		return nil, err
+	}
+
+	return student, nil
 }

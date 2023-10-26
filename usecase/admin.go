@@ -74,3 +74,12 @@ func CreateSPP(req *payloads.CreateSPPRequest) (res payloads.CreateSPPResponse, 
 
 	return
 }
+
+func GetStudentByID(id uuid.UUID) (student *models.Student, err error) {
+	student, err = repositories.GetStudentByID(id)
+	if err != nil {
+		return nil, errors.New("User not found")
+	}
+
+	return student, nil
+}
