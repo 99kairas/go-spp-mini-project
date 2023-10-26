@@ -1,6 +1,10 @@
 package payloads
 
-import "github.com/google/uuid"
+import (
+	"go-spp/models"
+
+	"github.com/google/uuid"
+)
 
 type Response struct {
 	Message string      `json:"message"`
@@ -40,4 +44,24 @@ type CreateSPPResponse struct {
 	Year    string    `json:"year"`
 	Month   string    `json:"month"`
 	Amount  float64   `json:"amount"`
+}
+
+type AdminCreatePaymentResponse struct {
+	ID            uuid.UUID `json:"id"`
+	SppID         uuid.UUID `json:"spp_id"`
+	Spp           []models.SPP
+	StudentID     uuid.UUID `json:"student_id"`
+	AdminID       uuid.UUID `json:"admin_id"`
+	TotalAmount   float64   `json:"total_amount"`
+	PaymentStatus bool      `json:"payment_status"`
+}
+
+type GetAllPaymentsResponse struct {
+	ID            uuid.UUID `json:"id"`
+	Spp           []models.SPP
+	Student       []models.Student
+	Admin         []models.Admin
+	TotalAmount   float64 `json:"total_amount"`
+	PaymentPhoto  string  `json:"payment_photo"`
+	PaymentStatus bool    `json:"payment_status"`
 }

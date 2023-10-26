@@ -9,26 +9,26 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func CreateSPPController(c echo.Context) error {
+func AdminCreatePaymentController(c echo.Context) error {
 	if _, err := middlewares.IsAdmin(c); err != nil {
 		return c.JSON(http.StatusUnauthorized, payloads.Response{
 			Message: "route only for admin",
 		})
 	}
 
-	payloadSPP := payloads.CreateSPPRequest{}
-	c.Bind(&payloadSPP)
+	payloadPayment := payloads.AdminCreatePaymentRequest{}
+	c.Bind(&payloadPayment)
 
-	response, err := usecase.CreateSPP(&payloadSPP)
+	response, err := usecase.CreatePayment(&payloadPayment)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, payloads.Response{
-			Message: "error create spp",
+			Message: "error create payment",
 			Data:    err.Error(),
 		})
 	}
 
 	return c.JSON(http.StatusOK, payloads.Response{
-		Message: "success create spp",
+		Message: "success create payment",
 		Data:    response,
 	})
 }

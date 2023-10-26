@@ -74,3 +74,41 @@ func CreateSPP(req *payloads.CreateSPPRequest) (res payloads.CreateSPPResponse, 
 
 	return
 }
+
+func CreatePayment(req *payloads.AdminCreatePaymentRequest) (res payloads.AdminCreatePaymentResponse, err error) {
+	if !repositories.IsPaymentAvailable(req.SppID) {
+		return res, errors.New("payment is already created")
+	}
+
+	spp, err := repositories.GetSPPByID(req.SppID)
+	if err != nil {
+		return res, err
+	}
+
+	newPayment := &models.Payment{
+		ID:            uuid.New(),
+		SppID:         req.SppID,
+		StudentID:     req.StudentID,
+		AdminID:       req.AdminID,
+		TotalAmount:   spp.Amount,
+		PaymentPhoto:  "",
+		PaymentStatus: false,
+	}
+
+	err = repositories.CreatePayment(newPayment)
+
+	if err != nil {
+		return
+	}
+
+	res = payloads.AdminCreatePaymentResponse{
+		ID:            newPayment.ID,
+		SppID:         newPayment.SppID,
+		StudentID:     newPayment.StudentID,
+		AdminID:       newPayment.AdminID,
+		TotalAmount:   newPayment.TotalAmount,
+		PaymentStatus: newPayment.PaymentStatus,
+	}
+
+	return
+}

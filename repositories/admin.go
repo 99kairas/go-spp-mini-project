@@ -41,3 +41,11 @@ func CreateSPP(spp *models.SPP) error {
 
 	return nil
 }
+
+func CreatePayment(payment *models.Payment) error {
+	if err := configs.DB.Create(payment).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
