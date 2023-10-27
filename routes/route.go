@@ -18,10 +18,12 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/login/admin", controllers.LoginAdminController)
 	e.POST("/login/student", controllers.LoginStudentController)
 
-	// STUDENT
+	// FOR ADMIN
 	authJWT := e.Group("/admin", middlewares.JWTMiddleware())
 	authJWT.Use(echojwt.JWT([]byte(os.Getenv("SECRET_JWT"))))
 	authJWT.POST("/register/student", controllers.RegisterStudentController)
+	authJWT.GET("/student/:id", controllers.GetStudentIDController)
+	authJWT.GET("/student", controllers.GetAllStudentController)
 	// e.POST("/admin/register/student", controllers.RegisterStudentController)
 
 	// SPP

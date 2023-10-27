@@ -57,7 +57,7 @@ func InitDB() *gorm.DB {
 }
 
 func InitMigrate() {
-	err := DB.AutoMigrate(&models.Admin{}, &models.Student{}, &models.Grade{}, &models.SPP{})
+	err := DB.AutoMigrate(&models.Admin{}, &models.Student{}, &models.Grade{}, &models.SPP{}, &models.Payment{})
 	if err != nil {
 		panic("failed to migrate database")
 	}
@@ -101,24 +101,4 @@ func Seeders() {
 			DB.Create(&v)
 		}
 	}
-
-	// passwordHash, _ := bcrypt.GenerateFromPassword([]byte("Rizki@123"), bcrypt.DefaultCost)
-	// student := []models.Student{
-	// 	{
-	// 		ID:        uuid.New(),
-	// 		NIS:       "11120029",
-	// 		Password:  string(passwordHash),
-	// 		FirstName: "Rizki Andika",
-	// 		LastName:  "Setiadi",
-	// 	},
-	// }
-	// for _, v := range student {
-	// 	var exist models.Student
-
-	// 	err := DB.Where("nis = ?", v.NIS).First(&exist).Error
-
-	// 	if err != nil {
-	// 		DB.Create(&v)
-	// 	}
-	// }
 }
