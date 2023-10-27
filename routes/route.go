@@ -23,6 +23,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	authJWT.Use(echojwt.JWT([]byte(os.Getenv("SECRET_JWT"))))
 	authJWT.POST("/register/student", controllers.RegisterStudentController)
 	authJWT.GET("/student/:id", controllers.GetStudentIDController)
+	authJWT.GET("/student", controllers.GetAllStudentController)
 	// e.POST("/admin/register/student", controllers.RegisterStudentController)
 
 	// SPP

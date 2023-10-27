@@ -44,7 +44,15 @@ func CreateSPP(spp *models.SPP) error {
 }
 
 func GetStudentByID(id uuid.UUID) (student *models.Student, err error) {
-	if err := configs.DB.Where("id = ?", id).First(&student).Error; err != nil {
+	if err := configs.DB.Where("id = ?", id).Preload("Grade").First(&student).Error; err != nil {
+		return student, err
+	}
+
+	return student, nil
+}
+
+func GetAllStudent() (student []models.Student, err error) {
+	if err := configs.DB.Preload("Grade").Find(&student).Error; err != nil {
 		return nil, err
 	}
 

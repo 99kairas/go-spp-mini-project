@@ -75,11 +75,49 @@ func CreateSPP(req *payloads.CreateSPPRequest) (res payloads.CreateSPPResponse, 
 	return
 }
 
-func GetStudentByID(id uuid.UUID) (student *models.Student, err error) {
-	student, err = repositories.GetStudentByID(id)
+func GetStudentByID(id uuid.UUID) (res payloads.GetStudentByID, err error) {
+	student, err := repositories.GetStudentByID(id)
 	if err != nil {
-		return nil, errors.New("User not found")
+		return res, errors.New("user not found")
 	}
 
-	return student, nil
+	res.ID = student.ID
+	res.NIS = student.NIS
+	res.Name = student.FirstName + " " + student.LastName
+	res.BirthDate = student.BirthDate
+	res.PhoneNumber = student.PhoneNumber
+	res.Address = student.Address
+	res.ProfilePicture = student.ProfilePicture
+	res.Grade = student.Grade
+	res.CreatedAt = &student.CreatedAt
+	res.UpdatedAt = &student.UpdatedAt
+
+	return res, nil
+}
+
+func GetAllStudent() (res []payloads.GetAllStudent, err error) {
+	students, err := repositories.GetAllStudent()
+	if err != nil {
+		return nil, errors.New("students not found")
+	}
+
+	res = []payloads.GetAllStudent{}
+
+	for _, student := range students {
+		res = append(res, payloads.GetAllStudent{
+			ID:             student.ID,
+			NIS:            student.NIS,
+			Name:           student.FirstName + " " + student.LastName,
+			BirthDate:      student.BirthDate,
+			PhoneNumber:    student.PhoneNumber,
+			Address:        student.Address,
+			ProfilePicture: student.ProfilePicture,
+			Grade:          student.Grade,
+			CreatedAt:      &student.CreatedAt,
+			UpdatedAt:      &student.UpdatedAt,
+		})
+
+	}
+
+	return res, nil
 }

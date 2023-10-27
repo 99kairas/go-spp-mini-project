@@ -55,24 +55,44 @@ func GetStudentIDController(c echo.Context) error {
 		})
 	}
 
-	studentID := c.Param("studentID")
+	studentID := c.Param("id")
 
 	studentUUID, err := uuid.Parse(studentID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, payloads.Response{
-			Message: "Invalid student ID format",
+			Message: "invalid student id format",
 		})
 	}
 
 	student, err := usecase.GetStudentByID(studentUUID)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, payloads.Response{
-			Message: "Student not found",
+			Message: "success not found",
 		})
 	}
 
 	return c.JSON(http.StatusOK, payloads.Response{
-		Message: fmt.Sprintf("Success get profile %s %s", student.FirstName, student.LastName),
+		Message: fmt.Sprintf("success get profile %s", student.Name),
+		Data:    student,
+	})
+}
+
+func GetAllStudentController(c echo.Context) error {
+	if _, err := middlewares.IsAdmin(c); err != nil {
+		return c.JSON(http.StatusUnauthorized, payloads.Response{
+			Message: "route only for admin",
+		})
+	}
+
+	student, err := usecase.GetAllStudent()
+	if err != nil {
+		return c.JSON(http.StatusNotFound, payloads.Response{
+			Message: "student not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, payloads.Response{
+		Message: "success get all data",
 		Data:    student,
 	})
 }
