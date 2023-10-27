@@ -47,7 +47,7 @@ func CreateAdmin(req *payloads.CreateAdminRequest) (resp payloads.CreateAdminRes
 }
 
 func CreateSPP(req *payloads.CreateSPPRequest) (res payloads.CreateSPPResponse, err error) {
-	if !repositories.IsSPPAvailable(req.Year, req.Month) {
+	if !repositories.IsSPPAvailable(req.Year, req.Month, req.GradeID) {
 		return res, errors.New("spp is already created")
 	}
 	newSPP := &models.SPP{
@@ -111,4 +111,51 @@ func CreatePayment(req *payloads.AdminCreatePaymentRequest) (res payloads.AdminC
 	}
 
 	return
+}
+
+func GetStudentByID(id uuid.UUID) (res payloads.GetStudentByID, err error) {
+	student, err := repositories.GetStudentByID(id)
+	if err != nil {
+		return res, errors.New("user not found")
+	}
+
+	res.ID = student.ID
+	res.NIS = student.NIS
+	res.Name = student.FirstName + " " + student.LastName
+	res.BirthDate = student.BirthDate
+	res.PhoneNumber = student.PhoneNumber
+	res.Address = student.Address
+	res.ProfilePicture = student.ProfilePicture
+	res.Grade = student.Grade
+	res.CreatedAt = &student.CreatedAt
+	res.UpdatedAt = &student.UpdatedAt
+
+	return res, nil
+}
+
+func GetAllStudent() (res []payloads.GetAllStudent, err error) {
+	students, err := repositories.GetAllStudent()
+	if err != nil {
+		return nil, errors.New("students not found")
+	}
+
+	res = []payloads.GetAllStudent{}
+
+	for _, student := range students {
+		res = append(res, payloads.GetAllStudent{
+			ID:             student.ID,
+			NIS:            student.NIS,
+			Name:           student.FirstName + " " + student.LastName,
+			BirthDate:      student.BirthDate,
+			PhoneNumber:    student.PhoneNumber,
+			Address:        student.Address,
+			ProfilePicture: student.ProfilePicture,
+			Grade:          student.Grade,
+			CreatedAt:      &student.CreatedAt,
+			UpdatedAt:      &student.UpdatedAt,
+		})
+
+	}
+
+	return res, nil
 }

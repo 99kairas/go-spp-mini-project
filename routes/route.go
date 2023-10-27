@@ -22,6 +22,8 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	authJWT := e.Group("/admin", middlewares.JWTMiddleware())
 	authJWT.Use(echojwt.JWT([]byte(os.Getenv("SECRET_JWT"))))
 	authJWT.POST("/register/student", controllers.RegisterStudentController)
+	authJWT.GET("/student/:id", controllers.GetStudentIDController)
+	authJWT.GET("/student", controllers.GetAllStudentController)
 	authJWT.POST("/spp", controllers.CreateSPPController)
 	authJWT.POST("/payment", controllers.AdminCreatePaymentController)
 }

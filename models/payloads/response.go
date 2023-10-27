@@ -3,6 +3,8 @@ package payloads
 import (
 	"go-spp/models"
 
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -44,6 +46,32 @@ type CreateSPPResponse struct {
 	Year    string    `json:"year"`
 	Month   string    `json:"month"`
 	Amount  float64   `json:"amount"`
+}
+
+type GetStudentByID struct {
+	ID             uuid.UUID    `json:"id"`
+	NIS            string       `json:"nis"`
+	Name           string       `json:"name"`
+	BirthDate      *time.Time   `json:"birth_date"`
+	PhoneNumber    string       `json:"phone_number"`
+	Address        string       `json:"address"`
+	ProfilePicture string       `json:"profile_picture"`
+	Grade          models.Grade `json:"grade"`
+	CreatedAt      *time.Time   `json:"created_at"`
+	UpdatedAt      *time.Time   `json:"updated_at"`
+}
+
+type GetAllStudent struct {
+	ID             uuid.UUID    `json:"id"`
+	NIS            string       `json:"nis"`
+	Name           string       `json:"name"`
+	BirthDate      *time.Time   `json:"birth_date"`
+	PhoneNumber    string       `json:"phone_number"`
+	Address        string       `json:"address"`
+	ProfilePicture string       `json:"profile_picture"`
+	Grade          models.Grade `json:"grade"`
+	CreatedAt      *time.Time   `json:"created_at"`
+	UpdatedAt      *time.Time   `json:"updated_at"`
 }
 
 type AdminCreatePaymentResponse struct {

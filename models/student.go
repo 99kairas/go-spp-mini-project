@@ -4,11 +4,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type Student struct {
-	gorm.Model
 	ID             uuid.UUID  `json:"id" form:"id"`
 	NIS            string     `json:"nis" form:"nis" gorm:"unique"`
 	Password       string     `json:"password" form:"password"`
@@ -21,4 +19,6 @@ type Student struct {
 	Grade          Grade
 	GradeID        uuid.UUID `json:"grade_id" form:"grade_id" gorm:"foreignKey:GradeID;size:191"`
 	Token          string    `json:"-" form:"-" gorm:"-"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
