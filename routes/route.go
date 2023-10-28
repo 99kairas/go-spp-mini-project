@@ -25,5 +25,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	authJWT.GET("/student/:id", controllers.GetStudentIDController)
 	authJWT.GET("/student", controllers.GetAllStudentController)
 	authJWT.POST("/spp", controllers.CreateSPPController)
-	authJWT.POST("/payment", controllers.AdminCreatePaymentController)
+	authJWT.POST("/payment/student", controllers.AdminCreatePaymentByStudentIDController)
+	authJWT.POST("/payment", controllers.AdminCreatePaymentAllStudentController)
+	authJWT.GET("/payment", controllers.GetAllPaymentsController)
 }

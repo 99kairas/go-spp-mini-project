@@ -43,14 +43,6 @@ func CreateSPP(spp *models.SPP) error {
 	return nil
 }
 
-func CreatePayment(payment *models.Payment) error {
-	if err := configs.DB.Create(payment).Error; err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func GetStudentByID(id uuid.UUID) (student *models.Student, err error) {
 	if err := configs.DB.Where("id = ?", id).Preload("Grade").First(&student).Error; err != nil {
 		return student, err
