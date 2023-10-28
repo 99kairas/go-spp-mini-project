@@ -82,35 +82,33 @@ func CreatePaymentByStudentID(req *payloads.AdminCreatePaymentByStudentIDRequest
 	return
 }
 
-func CreatePaymentAlLStudent(req *payloads.AdminCreatePaymentAllStudentRequest) (res payloads.AdminCreatePaymentAllStudentResponse, err error) {
+func CreatePaymentAllStudent(req *payloads.AdminCreatePaymentAllStudentRequest) (res payloads.AdminCreatePaymentAllStudentResponse, err error) {
 	students, err := repositories.IsStudentAvailable(req.GradeID)
 	if err != nil {
 		return res, err
 	}
 
-	// Dapatkan informasi SPP berdasarkan req.SppID
 	spp, err := repositories.GetSPPByID(req.SppID)
 	if err != nil {
 		return res, err
 	}
 
-	// Iterasi melalui daftar siswa
+	var newPayment *models.Payment
+
 	for _, student := range students {
-		// Cek apakah pembayaran untuk SPP ini sudah ada
 		paymentExists, err := repositories.IsPaymentAvailable(student.ID, req.SppID)
 		if err != nil {
 			return res, err
 		}
 
-		// Jika pembayaran belum ada, buat entri pembayaran baru
 		if !paymentExists {
-			newPayment := &models.Payment{
+			newPayment = &models.Payment{
 				ID:            uuid.New(),
 				SppID:         req.SppID,
 				StudentID:     student.ID,
-				AdminID:       req.AdminID, // Admin ID yang membuat pembayaran
+				AdminID:       req.AdminID,
 				TotalAmount:   spp.Amount,
-				PaymentPhoto:  "", // Foto pembayaran jika ada
+				PaymentPhoto:  "",
 				PaymentStatus: false,
 			}
 
@@ -118,8 +116,21 @@ func CreatePaymentAlLStudent(req *payloads.AdminCreatePaymentAllStudentRequest) 
 			if err != nil {
 				return res, err
 			}
+		} else {
+			return res, errors.New("payment is already created")
 		}
 	}
 
-	return
+	if newPayment != nil {
+		res = payloads.AdminCreatePaymentAllStudentResponse{
+			ID:            newPayment.ID,
+			SppID:         newPayment.SppID,
+			GradeID:       req.GradeID,
+			AdminID:       req.AdminID,
+			TotalAmount:   newPayment.TotalAmount,
+			PaymentStatus: newPayment.PaymentStatus,
+		}
+	}
+
+	return res, nil
 }

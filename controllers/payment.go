@@ -43,7 +43,7 @@ func AdminCreatePaymentAllStudentController(c echo.Context) error {
 	payloadPayment := payloads.AdminCreatePaymentAllStudentRequest{}
 	c.Bind(&payloadPayment)
 
-	response, err := usecase.CreatePaymentAlLStudent(&payloadPayment)
+	response, err := usecase.CreatePaymentAllStudent(&payloadPayment)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, payloads.Response{
 			Message: "error create payment",
