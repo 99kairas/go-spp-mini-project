@@ -47,7 +47,7 @@ func CreateAdmin(req *payloads.CreateAdminRequest) (resp payloads.CreateAdminRes
 }
 
 func CreateSPP(req *payloads.CreateSPPRequest) (res payloads.CreateSPPResponse, err error) {
-	if !repositories.IsSPPAvailable(req.Year, req.Month) {
+	if !repositories.IsSPPAvailable(req.Year, req.Month, req.GradeID) {
 		return res, errors.New("spp is already created")
 	}
 	newSPP := &models.SPP{
