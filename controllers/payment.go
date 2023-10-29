@@ -76,3 +76,23 @@ func GetAllPaymentsController(c echo.Context) error {
 		Data:    payment,
 	})
 }
+
+func GetPaymentsWithPhotoController(c echo.Context) error {
+	if _, err := middlewares.IsAdmin(c); err != nil {
+		return c.JSON(http.StatusUnauthorized, payloads.Response{
+			Message: "route only for admin",
+		})
+	}
+
+	payment, err := usecase.GetPaymentsWithPhoto()
+	if err != nil {
+		return c.JSON(http.StatusNotFound, payloads.Response{
+			Message: "payment not found",
+		})
+	}
+
+	return c.JSON(http.StatusOK, payloads.Response{
+		Message: "success get all data",
+		Data:    payment,
+	})
+}
