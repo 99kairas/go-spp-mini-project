@@ -5,6 +5,7 @@ import (
 	"go-spp/models/payloads"
 	"go-spp/repositories"
 	"go-spp/usecase"
+	"go-spp/utils"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -56,7 +57,7 @@ func LoginStudentController(c echo.Context) error {
 func UpdatePasswordController(c echo.Context) error {
 	payloadUser := payloads.UpdatePasswordRequest{}
 
-	userId, err := middlewares.IsUser(c)
+	studentID, err := middlewares.IsUser(c)
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, payloads.Response{
 			Message: "this route only for user",
@@ -65,7 +66,7 @@ func UpdatePasswordController(c echo.Context) error {
 
 	c.Bind(&payloadUser)
 
-	_, err = usecase.UpdatePassword(userId, &payloadUser)
+	_, err = usecase.UpdatePassword(studentID, &payloadUser)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, payloads.Response{
 			Message: "failed change password",
@@ -110,5 +111,38 @@ func UpdateProfileController(c echo.Context) error {
 	return c.JSON(http.StatusOK, payloads.Response{
 		Message: "success update profile",
 		Data:    response,
+	})
+}
+
+func UploadPaymentPhotoController(c echo.Context) error {
+	payloadUser := payloads.UploadPaymentPhotoRequest{}
+
+	c.Bind(&payloadUser)
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "error upload image form file",
+		})
+	}
+
+	resp, err := utils.UploadPaymentPhoto(file)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "error upload image to cloudinary",
+		})
+	}
+
+	_, err = usecase.UploadImage(payloadUser.PaymentID, resp)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "error upload image to database",
+			Data:    resp,
+		})
+	}
+
+	return c.JSON(http.StatusOK, payloads.Response{
+		Message: "upload image success",
+		Data:    resp,
 	})
 }

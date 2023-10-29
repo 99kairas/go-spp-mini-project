@@ -72,7 +72,7 @@ type UpdateProfileStudentRequest struct {
 	Address     string `json:"address" form:"address"`
 }
 
-type UploadImageCloudinaryBase64Request struct {
+type UploadPaymentPhotoRequest struct {
 	PaymentID uuid.UUID `json:"payment_id" form:"payment_id"`
 	Image     string    `json:"image" form:"image"`
 }

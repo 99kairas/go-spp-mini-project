@@ -35,4 +35,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	authStudent.Use(echojwt.JWT([]byte(os.Getenv("SECRET_JWT"))))
 	authStudent.PUT("/password/change", controllers.UpdatePasswordController)
 	authStudent.PUT("/profile", controllers.UpdateProfileController)
+	authStudent.POST("/upload", controllers.UploadPaymentPhotoController)
 }

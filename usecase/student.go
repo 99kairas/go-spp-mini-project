@@ -118,3 +118,12 @@ func UpdateProfile(student *models.Student, req *payloads.UpdateProfileStudentRe
 
 	return
 }
+
+func UploadImage(paymentID uuid.UUID, image string) (imageUrl string, err error) {
+	imageUrl, err = repositories.UploadImage(paymentID, image)
+	if err != nil {
+		return "", err
+	}
+
+	return imageUrl, nil
+}
