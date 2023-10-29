@@ -121,3 +121,9 @@ type AdminCreatePaymentAllStudentResponse struct {
 	TotalAmount   float64   `json:"total_amount"`
 	PaymentStatus bool      `json:"payment_status"`
 }
+
+type UpdateProfileStudentResponse struct {
+	BirthDate   *time.Time `json:"birth_date"`
+	PhoneNumber string     `json:"phone_number"`
+	Address     string     `json:"address"`
+}
