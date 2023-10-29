@@ -59,3 +59,20 @@ type AdminCreatePaymentAllStudentRequest struct {
 	PaymentPhoto  string     `json:"payment_photo" form:"payment_photo"`
 	PaymentStatus bool       `json:"payment_status" form:"payment_status"`
 }
+
+type UpdatePasswordRequest struct {
+	CurrentPassword string `json:"current_password" form:"current_password"`
+	Password        string `json:"password" form:"password"`
+	ConfirmPassword string `json:"confirm_password" form:"confirm_password"`
+}
+
+type UpdateProfileStudentRequest struct {
+	BirthDate   string `json:"birth_date" form:"birth_date"`
+	PhoneNumber string `json:"phone_number" form:"phone_number"`
+	Address     string `json:"address" form:"address"`
+}
+
+type UploadImageCloudinaryBase64Request struct {
+	PaymentID uuid.UUID `json:"payment_id" form:"payment_id"`
+	Image     string    `json:"image" form:"image"`
+}

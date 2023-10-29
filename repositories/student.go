@@ -32,3 +32,11 @@ func GetStudent(nis string) (student *models.Student, err error) {
 	}
 	return student, nil
 }
+
+func UpdateStudent(student *models.Student) error {
+	if err := configs.DB.Updates(&student).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
