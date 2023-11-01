@@ -55,6 +55,16 @@ func GetAllPayments() (payment []models.Payment, err error) {
 	return payment, nil
 }
 
+func GetPaymentByID(paymentID uuid.UUID) (payment []models.Payment, err error) {
+	db := configs.DB
+
+	if err := db.Preload("Spp").Preload("Student").Preload("Admin").Where("id = ?", paymentID).Find(&payment).Error; err != nil {
+		return nil, err
+	}
+
+	return payment, nil
+}
+
 func IsPaymentAvailable(studentID uuid.UUID, sppID uuid.UUID) (bool, error) {
 	var payment models.Payment
 	if err := configs.DB.Where("student_id = ? AND spp_id = ?", studentID, sppID).First(&payment).Error; err != nil {
@@ -80,5 +90,31 @@ func CreatePaymentAllStudent(payment *models.Payment) error {
 	if err := configs.DB.Create(payment).Error; err != nil {
 		return err
 	}
+	return nil
+}
+
+func GetPayment() (models.Payment, error) {
+	var payment models.Payment
+	if err := configs.DB.Model(payment).First(&payment).Error; err != nil {
+		return payment, err
+	}
+	return payment, nil
+}
+
+func GetPaymentID(paymentID uuid.UUID) (payment *models.Payment, err error) {
+	db := configs.DB
+
+	if err := db.Preload("Spp").Preload("Student").Preload("Admin").Where("id = ?", paymentID).Find(&payment).Error; err != nil {
+		return nil, err
+	}
+
+	return payment, nil
+}
+
+func UpdatePayment(payment *models.Payment) error {
+	if err := configs.DB.Updates(payment).Error; err != nil {
+		return err
+	}
+
 	return nil
 }

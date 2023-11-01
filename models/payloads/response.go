@@ -127,3 +127,9 @@ type UpdateProfileStudentResponse struct {
 	PhoneNumber string     `json:"phone_number"`
 	Address     string     `json:"address"`
 }
+
+type ApproveRejectPaymentResponse struct {
+	PaymentID     uuid.UUID `json:"payment_id"`
+	AdminID       uuid.UUID `json:"admin_id"`
+	PaymentStatus bool      `json:"payment_status"`
+}

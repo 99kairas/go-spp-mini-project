@@ -76,3 +76,8 @@ type UploadPaymentPhotoRequest struct {
 	PaymentID uuid.UUID `json:"payment_id" form:"payment_id"`
 	Image     string    `json:"image" form:"image"`
 }
+
+type ApproveRejectPaymentRequest struct {
+	PaymentID uuid.UUID `json:"payment_id" form:"payment_id"`
+	AdminID   uuid.UUID `json:"admin_id" form:"admin_id"`
+}

@@ -81,6 +81,43 @@ func GetPaymentsWithPhoto() (res []payloads.GetAllPaymentsResponse, err error) {
 	return res, nil
 }
 
+func GetPaymentByID(paymentID uuid.UUID) (res []payloads.GetAllPaymentsResponse, err error) {
+	payments, err := repositories.GetPaymentByID(paymentID)
+	if err != nil {
+		return nil, errors.New("payments not found")
+	}
+
+	for _, student := range payments {
+		if student.PaymentPhoto != "" {
+			res = append(res, payloads.GetAllPaymentsResponse{
+				ID: student.ID,
+				Spp: payloads.SPPResponse{
+					ID:    student.Spp.ID,
+					Year:  student.Spp.Year,
+					Month: student.Spp.Month,
+				},
+				Student: payloads.StudentResponse{
+					ID:   student.Student.ID,
+					NIS:  student.Student.NIS,
+					Name: student.Student.FirstName + " " + student.Student.LastName,
+				},
+				Admin: payloads.AdminResponse{
+					ID:       student.Admin.ID,
+					Username: student.Admin.Username,
+					Name:     student.Admin.Name,
+				},
+				TotalAmount:   student.TotalAmount,
+				PaymentPhoto:  student.PaymentPhoto,
+				PaymentStatus: student.PaymentStatus,
+				CreatedAt:     &student.CreatedAt,
+				UpdatedAt:     &student.UpdatedAt,
+			})
+		}
+	}
+
+	return res, nil
+}
+
 func CreatePaymentByStudentID(req *payloads.AdminCreatePaymentByStudentIDRequest) (res payloads.AdminCreatePaymentByStudentIDResponse, err error) {
 	if !repositories.IsPaymentAvailableByStudentID(req.SppID) {
 		return res, errors.New("payment is already created")
@@ -143,6 +180,7 @@ func CreatePaymentAllStudent(req *payloads.AdminCreatePaymentAllStudentRequest) 
 				ID:            uuid.New(),
 				SppID:         req.SppID,
 				StudentID:     student.ID,
+				GradeID:       req.GradeID,
 				AdminID:       req.AdminID,
 				TotalAmount:   spp.Amount,
 				PaymentPhoto:  "",
@@ -162,11 +200,63 @@ func CreatePaymentAllStudent(req *payloads.AdminCreatePaymentAllStudentRequest) 
 		res = payloads.AdminCreatePaymentAllStudentResponse{
 			ID:            newPayment.ID,
 			SppID:         newPayment.SppID,
-			GradeID:       req.GradeID,
-			AdminID:       req.AdminID,
+			GradeID:       newPayment.GradeID,
+			AdminID:       newPayment.AdminID,
 			TotalAmount:   newPayment.TotalAmount,
 			PaymentStatus: newPayment.PaymentStatus,
 		}
+	} else {
+		return res, errors.New("bad request")
+	}
+
+	return res, nil
+}
+
+func ApprovePayment(paymentID uuid.UUID, adminID uuid.UUID) (res payloads.ApproveRejectPaymentResponse, err error) {
+	payment, err := repositories.GetPaymentID(paymentID)
+	if err != nil {
+		return res, errors.New("payment not found")
+	}
+
+	payment.PaymentStatus = true
+
+	payment.AdminID = adminID
+
+	err = repositories.UpdatePayment(payment)
+	if err != nil {
+		return res, errors.New("can't update payment")
+	}
+
+	res = payloads.ApproveRejectPaymentResponse{
+		PaymentID:     paymentID,
+		AdminID:       adminID,
+		PaymentStatus: payment.PaymentStatus,
+	}
+
+	return res, nil
+}
+
+func RejectPayment(paymentID uuid.UUID, adminID uuid.UUID) (res payloads.ApproveRejectPaymentResponse, err error) {
+	payment, err := repositories.GetPaymentID(paymentID)
+	if err != nil {
+		return res, errors.New("payment not found")
+	}
+
+	payment.PaymentStatus = false
+
+	payment.AdminID = adminID
+
+	payment.PaymentPhoto = " "
+
+	err = repositories.UpdatePayment(payment)
+	if err != nil {
+		return res, errors.New("can't update payment")
+	}
+
+	res = payloads.ApproveRejectPaymentResponse{
+		PaymentID:     paymentID,
+		AdminID:       adminID,
+		PaymentStatus: payment.PaymentStatus,
 	}
 
 	return res, nil
