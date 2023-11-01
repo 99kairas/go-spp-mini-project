@@ -211,3 +211,28 @@ func CreatePaymentAllStudent(req *payloads.AdminCreatePaymentAllStudentRequest) 
 
 	return res, nil
 }
+
+func ApprovePayment(paymentID uuid.UUID, adminID uuid.UUID) (res payloads.ApproveRejectPaymentResponse, err error) {
+	// Retrieve the payment by paymentID
+	payment, err := repositories.GetPaymentID(paymentID)
+	if err != nil {
+		return res, errors.New("payment not found")
+	}
+
+	payment.PaymentStatus = true
+
+	payment.AdminID = adminID
+
+	err = repositories.UpdatePayment(payment)
+	if err != nil {
+		return res, errors.New("can't update payment")
+	}
+
+	res = payloads.ApproveRejectPaymentResponse{
+		PaymentID:     paymentID,
+		AdminID:       adminID,
+		PaymentStatus: payment.PaymentStatus,
+	}
+
+	return res, nil
+}

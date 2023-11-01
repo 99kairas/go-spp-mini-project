@@ -30,6 +30,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	authJWT.GET("/payment", controllers.GetAllPaymentsController)
 	authJWT.GET("/payment/photo", controllers.GetPaymentsWithPhotoController)
 	authJWT.GET("/payment/details/:id", controllers.GetPaymentByIDController)
+	authJWT.PUT("/payment/approve", controllers.ApprovePaymentController)
 
 	// FOR STUDENT
 	authStudent := e.Group("/student", middlewares.JWTMiddleware())

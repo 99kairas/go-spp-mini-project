@@ -92,3 +92,29 @@ func CreatePaymentAllStudent(payment *models.Payment) error {
 	}
 	return nil
 }
+
+func GetPayment() (models.Payment, error) {
+	var payment models.Payment
+	if err := configs.DB.Model(payment).First(&payment).Error; err != nil {
+		return payment, err
+	}
+	return payment, nil
+}
+
+func GetPaymentID(paymentID uuid.UUID) (payment *models.Payment, err error) {
+	db := configs.DB
+
+	if err := db.Preload("Spp").Preload("Student").Preload("Admin").Where("id = ?", paymentID).Find(&payment).Error; err != nil {
+		return nil, err
+	}
+
+	return payment, nil
+}
+
+func UpdatePayment(payment *models.Payment) error {
+	if err := configs.DB.Updates(payment).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

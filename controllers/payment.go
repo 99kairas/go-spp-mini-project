@@ -126,3 +126,26 @@ func GetPaymentsWithPhotoController(c echo.Context) error {
 		Data:    payment,
 	})
 }
+
+func ApprovePaymentController(c echo.Context) error {
+	var request payloads.ApproveRejectPaymentRequest
+	if err := c.Bind(&request); err != nil {
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "invalid request body",
+			Data:    err.Error(),
+		})
+	}
+
+	response, err := usecase.ApprovePayment(request.PaymentID, request.AdminID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "failed to approve payment",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, payloads.Response{
+		Message: "payment approved successfully",
+		Data:    response,
+	})
+}
