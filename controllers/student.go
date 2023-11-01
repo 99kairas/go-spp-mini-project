@@ -8,6 +8,7 @@ import (
 	"go-spp/utils"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -144,5 +145,60 @@ func UploadPaymentPhotoController(c echo.Context) error {
 	return c.JSON(http.StatusOK, payloads.Response{
 		Message: "upload image success",
 		Data:    resp,
+	})
+}
+
+func GetPaymentsController(c echo.Context) error {
+	studentID, err := middlewares.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, payloads.Response{
+			Message: "this route is only for user",
+		})
+	}
+
+	user, err := usecase.GetPayments(studentID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payloads.Response{
+		Message: "success get all data",
+		Data:    user,
+	})
+}
+
+func GetDetailPaymentController(c echo.Context) error {
+	studentID, err := middlewares.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, payloads.Response{
+			Message: "route only for authorized users",
+		})
+	}
+
+	paymentID := c.Param("id")
+
+	paymentUUID, err := uuid.Parse(paymentID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "invalid payment id format",
+		})
+	}
+
+	payment, err := usecase.GetDetailPayments(paymentUUID)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, payloads.Response{
+			Message: "payment not found",
+		})
+	}
+
+	if studentID != payment[0].Student.ID {
+		return c.JSON(http.StatusForbidden, payloads.Response{
+			Message: "access denied",
+		})
+	}
+
+	return c.JSON(http.StatusOK, payloads.Response{
+		Message: "success get payment",
+		Data:    payment,
 	})
 }

@@ -56,3 +56,19 @@ func UploadImage(paymentID uuid.UUID, image string) (imageUrl string, err error)
 
 	return imageUrl, nil
 }
+
+func GetPaymentsID(studentID uuid.UUID) (payment []models.Payment, err error) {
+	if err := configs.DB.Preload("Spp").Preload("Student").Preload("Admin").Where("student_id = ?", studentID).Find(&payment).Error; err != nil {
+		return nil, err
+	}
+
+	return payment, nil
+}
+
+func GetDetailPaymentsID(paymentID uuid.UUID) (payment []models.Payment, err error) {
+	if err := configs.DB.Preload("Spp").Preload("Student").Preload("Admin").Where("id = ?", paymentID).First(&payment).Error; err != nil {
+		return nil, err
+	}
+
+	return payment, nil
+}

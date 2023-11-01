@@ -97,7 +97,7 @@ func GetPaymentByIDController(c echo.Context) error {
 	payment, err := usecase.GetPaymentByID(paymentUUID)
 	if err != nil {
 		return c.JSON(http.StatusNotFound, payloads.Response{
-			Message: "success not found",
+			Message: "payment not found",
 		})
 	}
 

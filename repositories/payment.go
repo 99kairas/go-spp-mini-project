@@ -69,7 +69,6 @@ func IsPaymentAvailable(studentID uuid.UUID, sppID uuid.UUID) (bool, error) {
 	var payment models.Payment
 	if err := configs.DB.Where("student_id = ? AND spp_id = ?", studentID, sppID).First(&payment).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			// Pembayaran belum ada
 			return false, nil
 		}
 		return false, err
