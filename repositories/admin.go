@@ -58,3 +58,11 @@ func GetAllStudent() (student []models.Student, err error) {
 
 	return student, nil
 }
+
+func DeleteStudent(student *models.Student) error {
+	if err := configs.DB.Delete(&student).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

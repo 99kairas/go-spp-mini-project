@@ -17,6 +17,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/register/admin", controllers.RegisterAdminController)
 	e.POST("/login/admin", controllers.LoginAdminController)
 	e.POST("/login/student", controllers.LoginStudentController)
+	e.POST("/ai", controllers.OpenAIController)
 
 	// FOR ADMIN
 	authJWT := e.Group("/admin", middlewares.JWTMiddleware())
@@ -32,6 +33,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	authJWT.GET("/payment/details/:id", controllers.GetPaymentByIDController)
 	authJWT.PUT("/payment/approve", controllers.ApprovePaymentController)
 	authJWT.PUT("/payment/reject", controllers.RejectPaymentController)
+	authJWT.DELETE("/student/:id", controllers.DeleteStudentController)
 
 	// FOR STUDENT
 	authStudent := e.Group("/student", middlewares.JWTMiddleware())

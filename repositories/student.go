@@ -72,3 +72,11 @@ func GetDetailPaymentsID(paymentID uuid.UUID) (payment []models.Payment, err err
 
 	return payment, nil
 }
+
+func DeletePaymentsByStudentID(studentID uuid.UUID) error {
+	if err := configs.DB.Where("student_id = ?", studentID).Delete(&models.Payment{}).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
