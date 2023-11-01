@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"go-spp/configs"
 	"go-spp/middlewares"
 	"go-spp/routes"
 	"log"
+	"os"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -23,9 +25,11 @@ func main() {
 	db := configs.InitDB()
 	e := echo.New()
 
+	server := os.Getenv("SERVER_PORT")
+
 	routes.Routes(e, db)
 
 	middlewares.LogMiddleware(e)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%s", server)))
 }
