@@ -17,6 +17,7 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	e.POST("/register/admin", controllers.RegisterAdminController)
 	e.POST("/login/admin", controllers.LoginAdminController)
 	e.POST("/login/student", controllers.LoginStudentController)
+	e.POST("/ai", controllers.OpenAIController)
 
 	// FOR ADMIN
 	authJWT := e.Group("/admin", middlewares.JWTMiddleware())
