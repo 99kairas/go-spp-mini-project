@@ -202,3 +202,26 @@ func GetDetailPaymentController(c echo.Context) error {
 		Data:    payment,
 	})
 }
+
+func DeleteStudentController(c echo.Context) error {
+	studentID := c.Param("id")
+
+	studentUUID, err := uuid.Parse(studentID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "invalid student ID format",
+		})
+	}
+
+	err = usecase.DeleteStudent(studentUUID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, payloads.Response{
+			Message: "failed to delete student",
+			Data:    err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, payloads.Response{
+		Message: "student deleted successfully",
+	})
+}

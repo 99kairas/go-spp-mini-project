@@ -206,3 +206,21 @@ func GetDetailPayments(paymentID uuid.UUID) (res []payloads.GetAllPaymentsRespon
 
 	return res, nil
 }
+
+func DeleteStudent(studentID uuid.UUID) error {
+	student, err := repositories.GetStudentByID(studentID)
+	if err != nil {
+		return errors.New("student not found")
+	}
+
+	if err := repositories.DeletePaymentsByStudentID(studentID); err != nil {
+		return err
+	}
+
+	err = repositories.DeleteStudent(student)
+	if err != nil {
+		return errors.New("failed to delete the student")
+	}
+
+	return nil
+}
