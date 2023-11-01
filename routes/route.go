@@ -39,4 +39,5 @@ func Routes(e *echo.Echo, db *gorm.DB) {
 	authStudent.PUT("/password/change", controllers.UpdatePasswordController)
 	authStudent.PUT("/profile", controllers.UpdateProfileController)
 	authStudent.POST("/upload", controllers.UploadPaymentPhotoController)
+	authStudent.GET("/payment", controllers.GetPaymentsController)
 }

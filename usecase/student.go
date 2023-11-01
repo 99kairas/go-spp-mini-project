@@ -127,3 +127,47 @@ func UploadImage(paymentID uuid.UUID, image string) (imageUrl string, err error)
 
 	return imageUrl, nil
 }
+
+func GetStudent(studentID uuid.UUID) (payment []models.Payment, err error) {
+	payment, err = repositories.GetPaymentsID(studentID)
+	if err != nil {
+		return nil, errors.New("student not found")
+	}
+
+	return payment, nil
+}
+
+func GetPayments(studentID uuid.UUID) (res []payloads.GetAllPaymentsResponse, err error) {
+	payments, err := repositories.GetPaymentsID(studentID)
+	if err != nil {
+		return nil, errors.New("payments not found")
+	}
+
+	for _, student := range payments {
+		res = append(res, payloads.GetAllPaymentsResponse{
+			ID: student.ID,
+			Spp: payloads.SPPResponse{
+				ID:    student.Spp.ID,
+				Year:  student.Spp.Year,
+				Month: student.Spp.Month,
+			},
+			Student: payloads.StudentResponse{
+				ID:   student.Student.ID,
+				NIS:  student.Student.NIS,
+				Name: student.Student.FirstName + " " + student.Student.LastName,
+			},
+			Admin: payloads.AdminResponse{
+				ID:       student.Admin.ID,
+				Username: student.Admin.Username,
+				Name:     student.Admin.Name,
+			},
+			TotalAmount:   student.TotalAmount,
+			PaymentPhoto:  student.PaymentPhoto,
+			PaymentStatus: student.PaymentStatus,
+			CreatedAt:     &student.CreatedAt,
+			UpdatedAt:     &student.UpdatedAt,
+		})
+	}
+
+	return res, nil
+}

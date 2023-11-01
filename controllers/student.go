@@ -146,3 +146,22 @@ func UploadPaymentPhotoController(c echo.Context) error {
 		Data:    resp,
 	})
 }
+
+func GetPaymentsController(c echo.Context) error {
+	studentID, err := middlewares.IsUser(c)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, payloads.Response{
+			Message: "this route is only for user",
+		})
+	}
+
+	user, err := usecase.GetPayments(studentID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, payloads.Response{
+		Message: "success get all data",
+		Data:    user,
+	})
+}
