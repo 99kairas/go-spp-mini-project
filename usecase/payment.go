@@ -180,6 +180,7 @@ func CreatePaymentAllStudent(req *payloads.AdminCreatePaymentAllStudentRequest) 
 				ID:            uuid.New(),
 				SppID:         req.SppID,
 				StudentID:     student.ID,
+				GradeID:       req.GradeID,
 				AdminID:       req.AdminID,
 				TotalAmount:   spp.Amount,
 				PaymentPhoto:  "",
@@ -199,11 +200,13 @@ func CreatePaymentAllStudent(req *payloads.AdminCreatePaymentAllStudentRequest) 
 		res = payloads.AdminCreatePaymentAllStudentResponse{
 			ID:            newPayment.ID,
 			SppID:         newPayment.SppID,
-			GradeID:       req.GradeID,
-			AdminID:       req.AdminID,
+			GradeID:       newPayment.GradeID,
+			AdminID:       newPayment.AdminID,
 			TotalAmount:   newPayment.TotalAmount,
 			PaymentStatus: newPayment.PaymentStatus,
 		}
+	} else {
+		return res, errors.New("bad request")
 	}
 
 	return res, nil
