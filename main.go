@@ -5,7 +5,6 @@ import (
 	"go-spp/configs"
 	"go-spp/middlewares"
 	"go-spp/routes"
-	"log"
 	"os"
 	"time"
 
@@ -14,10 +13,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("failed to load .env")
-	}
+	godotenv.Load(".env")
 
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	time.Local = loc
