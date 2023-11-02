@@ -88,31 +88,29 @@ func GetPaymentByID(paymentID uuid.UUID) (res []payloads.GetAllPaymentsResponse,
 	}
 
 	for _, student := range payments {
-		if student.PaymentPhoto != "" {
-			res = append(res, payloads.GetAllPaymentsResponse{
-				ID: student.ID,
-				Spp: payloads.SPPResponse{
-					ID:    student.Spp.ID,
-					Year:  student.Spp.Year,
-					Month: student.Spp.Month,
-				},
-				Student: payloads.StudentResponse{
-					ID:   student.Student.ID,
-					NIS:  student.Student.NIS,
-					Name: student.Student.FirstName + " " + student.Student.LastName,
-				},
-				Admin: payloads.AdminResponse{
-					ID:       student.Admin.ID,
-					Username: student.Admin.Username,
-					Name:     student.Admin.Name,
-				},
-				TotalAmount:   student.TotalAmount,
-				PaymentPhoto:  student.PaymentPhoto,
-				PaymentStatus: student.PaymentStatus,
-				CreatedAt:     &student.CreatedAt,
-				UpdatedAt:     &student.UpdatedAt,
-			})
-		}
+		res = append(res, payloads.GetAllPaymentsResponse{
+			ID: student.ID,
+			Spp: payloads.SPPResponse{
+				ID:    student.Spp.ID,
+				Year:  student.Spp.Year,
+				Month: student.Spp.Month,
+			},
+			Student: payloads.StudentResponse{
+				ID:   student.Student.ID,
+				NIS:  student.Student.NIS,
+				Name: student.Student.FirstName + " " + student.Student.LastName,
+			},
+			Admin: payloads.AdminResponse{
+				ID:       student.Admin.ID,
+				Username: student.Admin.Username,
+				Name:     student.Admin.Name,
+			},
+			TotalAmount:   student.TotalAmount,
+			PaymentPhoto:  student.PaymentPhoto,
+			PaymentStatus: student.PaymentStatus,
+			CreatedAt:     &student.CreatedAt,
+			UpdatedAt:     &student.UpdatedAt,
+		})
 	}
 
 	return res, nil
